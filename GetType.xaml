@@ -25,20 +25,15 @@
               ShowsPreview="True"
               Width="5"  />
         <DataGrid  Grid.Row="0" Grid.Column="1" x:Name="types"  SelectionChanged="Types_OnSelectionChanged" >
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="FullName" Binding="{Binding Path=FullName}"></DataGridTextColumn>
-            </DataGrid.Columns>
+            
         </DataGrid>
 
         <StackPanel Orientation="Vertical"  Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0">
             <ToolBar>
                 <Button Click="SelectType_OnClick">Code.Gen</Button>
             </ToolBar>
-            <DataGrid x:Name="singleType">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name"  Binding="{Binding Path=Name}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Type"  Binding="{Binding Path=PropertyType}"></DataGridTextColumn>
-                </DataGrid.Columns>
+            <DataGrid x:Name="singleType" GridLinesVisibility="Vertical" HorizontalGridLinesBrush="#FFE6E0E0">
+                
             </DataGrid>
         </StackPanel>
         

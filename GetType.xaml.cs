@@ -15,9 +15,43 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ReflectionGen.CodeGen;
 
 namespace ReflectionGen
 {
+    public class TypeModel
+    {
+        public TypeModel(Type type)
+        {
+            this.type = type;
+        }
+
+        readonly Type type;
+
+        public string NameSpace { get { return type.Namespace; } }
+        public string Name { get { return TypeHelper.ToFriendlyCSharp(type); } }
+
+        
+
+        public Type GetData()
+        {
+            return type;
+        }
+    }
+
+    public class PropModel
+    {
+        private readonly PropertyInfo prop;
+
+        public PropModel(PropertyInfo prop)
+        {
+            this.prop = prop;
+        }
+
+        public string Name { get { return prop.Name; } }
+        public string PropertyType { get { return TypeHelper.ToFriendlyCSharp(prop.PropertyType); } }
+    }
+
     /// <summary>
     /// Interaction logic for GetType.xaml
     /// </summary>
@@ -49,7 +83,7 @@ namespace ReflectionGen
                 var path = files.SelectedItem as System.IO.FileInfo;
 
                 Assembly assembly = Assembly.LoadFile(path.FullName);
-                types.ItemsSource = assembly.GetTypes();    
+                types.ItemsSource = assembly.GetTypes().OrderBy(x => x.Namespace).ThenBy(x=>x.Name).Select(x => new TypeModel(x));    
             }
             
         }
@@ -59,10 +93,10 @@ namespace ReflectionGen
         {
             if (types.SelectedItem != null)
             {
-                var path = types.SelectedItem as Type;
+                var path = types.SelectedItem as TypeModel;
                 if (path != null)
                 {
-                    singleType.ItemsSource = path.GetProperties();    
+                    singleType.ItemsSource = path.GetData().GetProperties().Select(x=>new PropModel(x));    
                 }
             }
         }
@@ -73,7 +107,7 @@ namespace ReflectionGen
             var code = new CodeGenByType();
 
             gen.Include(code);
-            code.DataContext = types.SelectedItem;
+            code.DataContext = (types.SelectedItem as TypeModel).GetData();
             gen.ShowDialog();
         }
     }
